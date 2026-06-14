@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VacunaTrack — Tu historial personal</title>
+
+    <!-- Leaflet.js CSS: mapa interactivo (OpenStreetMap, sin costos) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+
+    <!-- ======================================================
+         PANTALLA 1: LOGIN / REGISTRO
+         Visible por defecto. Se oculta al iniciar sesión.
+    ====================================================== -->
+    <div id="pantalla-auth" class="pantalla activa">
+
+      <!-- Logo y tagline -->
+      <header class="auth-header">
+        <div class="logo-mark">
+          <span class="logo-icon">💉</span>
+          <span class="logo-text">VacunaTrack</span>
+        </div>
+        <p class="tagline">Tu historial de vacunación, siempre contigo.</p>
+      </header>
+
+      <!-- Tabs para alternar entre Login y Registro -->
+      <div class="auth-card">
+        <div class="tabs" role="tablist">
+          <button
+            class="tab activo"
+            id="tab-login"
+            role="tab"
+            aria-selected="true"
+            aria-controls="form-login"
+            onclick="cambiarTab('login')"
+          >Iniciar sesión</button>
+          <button
+            class="tab"
+            id="tab-registro"
+            role="tab"
+            aria-selected="false"
+            aria-controls="form-registro"
+            onclick="cambiarTab('registro')"
+          >Crear cuenta</button>
+        </div>
+
+        <!-- Formulario: Iniciar sesión -->
+        <div id="form-login" role="tabpanel" class="form-panel activo">
+          <div class="campo">
+            <label for="login-correo">Correo electrónico</label>
+            <input
+              type="email"
+              id="login-correo"
+              placeholder="tu@correo.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="campo">
+            <label for="login-pass">Contraseña</label>
+            <input
+              type="password"
+              id="login-pass"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+          </div>
+          <button class="btn-primario" onclick="handleLogin()">
+            Entrar
+          </button>
+          <p id="error-login" class="msg-error oculto"></p>
+        </div>
+
+        <!-- Formulario: Crear cuenta -->
+        <div id="form-registro" role="tabpanel" class="form-panel oculto">
+          <div class="campo">
+            <label for="reg-correo">Correo electrónico</label>
+            <input
+              type="email"
+              id="reg-correo"
+              placeholder="tu@correo.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="campo">
+            <label for="reg-pass">Contraseña <span class="hint">(mín. 8 caracteres)</span></label>
+            <input
+              type="password"
+              id="reg-pass"
+              placeholder="••••••••"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="campo">
+            <label for="reg-fecha">Fecha de nacimiento</label>
+            <input type="date" id="reg-fecha" />
+          </div>
+          <button class="btn-primario" onclick="handleRegistro()">
+            Crear mi cuenta
+          </button>
+          <p id="error-registro" class="msg-error oculto"></p>
+          <p id="exito-registro" class="msg-exito oculto"></p>
+        </div>
+      </div>
+
+    </div><!-- /pantalla-auth -->
+
+
+    <!-- ======================================================
+         PANTALLA 2: DASHBOARD
+         Oculta por defecto. Se muestra tras autenticarse.
+    ====================================================== -->
+    <div id="pantalla-dashboard" class="pantalla oculto">
+
+      <!-- Barra superior de navegación -->
+      <nav class="topbar">
+        <div class="topbar-marca">
+          <span class="logo-icon">💉</span>
+          <span class="logo-text">VacunaTrack</span>
+        </div>
+        <div class="topbar-acciones">
+          <span id="saludo-usuario" class="saludo"></span>
+          <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar sesión">
+            Salir
+          </button>
+        </div>
+      </nav>
+
+      <!-- Contenido principal del dashboard -->
+      <main class="dashboard-contenido">
+
+        <!-- Sección: Acciones rápidas -->
+        <section class="seccion-acciones">
+          <h2 class="seccion-titulo">Mi historial</h2>
+          <button
+            class="btn-primario btn-nueva-vacuna"
+            onclick="abrirModalVacuna()"
+          >
+            + Registrar vacuna aplicada
+          </button>
+        </section>
+
+        <!-- Sección: Historial de vacunas -->
+        <section class="seccion-historial">
+          <h3 class="sub-titulo">Vacunas registradas</h3>
+          <div id="lista-historial" class="lista-historial">
+            <!-- Inyectado por app.js al cargar historial -->
+            <p class="estado-vacio">Cargando tu historial…</p>
+          </div>
+        </section>
+        <!-- Sección: Calendario de Alertas -->
+        <section class="seccion-alertas">
+          <h3 class="sub-titulo">Alertas y Próximas Vacunas</h3>
+          <div id="lista-alertas" class="lista-alertas">
+            <p class="estado-vacio">Calculando próximas vacunas…</p>
+          </div>
+        </section>
+
+        <!-- Sección: Noticias Oficiales -->
+        <section class="seccion-noticias">
+          <h3 class="sub-titulo">Noticias Oficiales de Salud</h3>
+          <div id="lista-noticias" class="lista-noticias">
+            <p class="estado-vacio">Cargando noticias…</p>
+          </div>
+        </section>
+
+        <!-- Sección: Mapa de puntos de vacunación -->
+        <section class="seccion-mapa">
+          <h3 class="sub-titulo">Puntos de vacunación cercanos</h3>
+          <p class="mapa-nota">Ubicaciones de ejemplo en Ciudad de México.</p>
+          <!--
+            div#mapa: Leaflet.js monta aquí el mapa interactivo.
+            IMPORTANTE: El div DEBE tener altura definida en CSS,
+            de lo contrario Leaflet renderiza un mapa de 0px.
+          -->
+          <div id="mapa"></div>
+        </section>
+
+      </main>
+    </div><!-- /pantalla-dashboard -->
+
+
+    <!-- ======================================================
+         MODAL: Registrar nueva vacuna
+         Se muestra sobre el dashboard al presionar el botón.
+    ====================================================== -->
+    <div id="modal-vacuna" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <div class="modal-caja">
+        <div class="modal-header">
+          <h3 id="modal-titulo">Registrar vacuna aplicada</h3>
+          <button class="btn-cerrar-modal" onclick="cerrarModalVacuna()" aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="campo">
+          <label for="sel-vacuna">Vacuna</label>
+          <select id="sel-vacuna">
+            <option value="">Selecciona una vacuna…</option>
+            <!-- Opciones inyectadas dinámicamente desde /api/catalogo -->
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="fecha-aplicacion">Fecha de aplicación</label>
+          <input type="date" id="fecha-aplicacion" />
+        </div>
+
+        <div class="campo">
+          <label for="notas-vacuna">Notas <span class="hint">(opcional)</span></label>
+          <textarea id="notas-vacuna" rows="3" placeholder="Ej: dosis 1 de 3, sin reacciones…"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-secundario" onclick="cerrarModalVacuna()">Cancelar</button>
+          <button class="btn-primario" onclick="guardarVacuna()">Guardar</button>
+        </div>
+
+        <p id="error-vacuna" class="msg-error oculto"></p>
+        <p id="exito-vacuna" class="msg-exito oculto"></p>
+      </div>
+    </div><!-- /modal-vacuna -->
+
+
+    <!-- Leaflet.js JS: debe cargar ANTES de app.js -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Lógica de la aplicación -->
+    <script src="app.js"></script>
+  </body>
+</html>

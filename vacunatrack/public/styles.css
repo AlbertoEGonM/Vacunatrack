@@ -1,0 +1,627 @@
+/* ============================================================
+   VacunaTrack — styles.css
+   Mobile-first. Paleta oscura teal/cyan para salud moderna.
+   Breakpoints: base (≤480px) → tablet (≥600px) → desktop (≥960px)
+   ============================================================ */
+
+/* ---- Tokens de diseño ------------------------------------ */
+:root {
+  --c-bg:          #0d1117;   /* fondo principal oscuro */
+  --c-surface:     #161b22;   /* cards y paneles */
+  --c-border:      #21262d;   /* bordes sutiles */
+  --c-accent:      #22d3a5;   /* teal vibrante — acción principal */
+  --c-accent-dim:  #15a07a;   /* hover de acento */
+  --c-accent-glow: rgba(34, 211, 165, 0.15);
+  --c-text:        #e6edf3;   /* texto principal */
+  --c-text-muted:  #8b949e;   /* texto secundario */
+  --c-error:       #f85149;
+  --c-success:     #3fb950;
+
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--c-accent-glow);
+
+  --font-display: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body:    'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --transition: 0.18s ease;
+}
+
+/* ---- Reset mínimo ---------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--c-bg);
+  color: var(--c-text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Utilidades ------------------------------------------ */
+.oculto   { display: none !important; }
+.activo   { display: block !important; }
+
+.pantalla { width: 100%; min-height: 100vh; }
+
+.msg-error {
+  color: var(--c-error);
+  font-size: 0.85rem;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(248, 81, 73, 0.1);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--c-error);
+}
+
+.msg-exito {
+  color: var(--c-success);
+  font-size: 0.85rem;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(63, 185, 80, 0.1);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--c-success);
+}
+
+/* ============================================================
+   PANTALLA DE AUTENTICACIÓN
+   ============================================================ */
+#pantalla-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(34, 211, 165, 0.07) 0%, transparent 60%),
+    var(--c-bg);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.logo-icon { font-size: 2rem; }
+
+.logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--c-accent);
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Card del formulario */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-card);
+}
+
+/* ---- Tabs ---- */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 24px;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 0;
+  font-size: 0.95rem;
+  color: var(--c-text-muted);
+  font-family: var(--font-body);
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.tab.activo {
+  color: var(--c-accent);
+  border-bottom-color: var(--c-accent);
+}
+
+.tab:hover:not(.activo) { color: var(--c-text); }
+
+/* ---- Campos de formulario ---- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.campo label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  letter-spacing: 0.3px;
+}
+
+.campo .hint {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  color: var(--c-text);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  appearance: none;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-glow);
+}
+
+.campo select option { background: var(--c-surface); }
+
+.campo textarea { resize: vertical; min-height: 80px; }
+
+/* ---- Botones ---- */
+.btn-primario {
+  width: 100%;
+  padding: 12px;
+  background: var(--c-accent);
+  color: #0d1117;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.btn-primario:hover {
+  background: var(--c-accent-dim);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.btn-primario:active { transform: translateY(0); }
+
+.btn-secundario {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--c-text-muted);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.btn-secundario:hover {
+  border-color: var(--c-text-muted);
+  color: var(--c-text);
+}
+
+/* ---- Alertas y Próximas Vacunas ---- */
+.seccion-alertas, .seccion-noticias { margin-bottom: 36px; }
+
+.lista-alertas, .lista-noticias {
+  display: grid;
+  gap: 12px;
+}
+
+.alerta-card {
+  background: rgba(248, 203, 73, 0.1);
+  border-left: 4px solid #f8cb49; /* Color amarillo de advertencia */
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.alerta-titulo {
+  font-weight: 700;
+  color: #f8cb49;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.alerta-desc {
+  font-size: 0.85rem;
+  color: var(--c-text);
+}
+
+/* ---- Noticias Oficiales ---- */
+.noticia-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: border-color var(--transition);
+}
+
+.noticia-card:hover { border-color: var(--c-accent-dim); }
+
+.noticia-fecha {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.noticia-titulo {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--c-text);
+  margin-bottom: 6px;
+}
+
+.noticia-desc {
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+}
+
+.noticia-enlace {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--c-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.noticia-enlace:hover { text-decoration: underline; }
+
+@media (min-width: 600px) {
+  .lista-noticias { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+#pantalla-dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Barra superior (topbar) ---- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(22, 27, 34, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.topbar-marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-marca .logo-text { font-size: 1.15rem; }
+.topbar-marca .logo-icon { font-size: 1.3rem; }
+
+.topbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saludo {
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid var(--c-border);
+  color: var(--c-text-muted);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.btn-logout:hover {
+  border-color: var(--c-error);
+  color: var(--c-error);
+}
+
+/* ---- Contenido principal ---- */
+.dashboard-contenido {
+  padding: 20px 16px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.seccion-titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--c-text);
+}
+
+.sub-titulo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  margin-bottom: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.seccion-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.btn-nueva-vacuna {
+  max-width: 280px;
+  padding: 13px 20px;
+}
+
+/* ---- Lista de historial ---- */
+.seccion-historial { margin-bottom: 36px; }
+
+.lista-historial {
+  display: grid;
+  gap: 12px;
+}
+
+.estado-vacio {
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  padding: 20px 0;
+}
+
+/* Tarjeta de cada vacuna en el historial */
+.vacuna-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  transition: border-color var(--transition);
+}
+
+.vacuna-card:hover { border-color: var(--c-accent); }
+
+.vacuna-icono {
+  width: 40px;
+  height: 40px;
+  background: var(--c-accent-glow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.vacuna-info { min-width: 0; }
+
+.vacuna-nombre {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--c-text);
+  margin-bottom: 4px;
+}
+
+.vacuna-fecha {
+  font-size: 0.82rem;
+  color: var(--c-accent);
+  font-weight: 600;
+}
+
+.vacuna-notas {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+/* ---- Mapa ---- */
+.seccion-mapa { margin-bottom: 40px; }
+
+.mapa-nota {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  margin-bottom: 12px;
+}
+
+/* Altura explícita requerida por Leaflet */
+#mapa {
+  width: 100%;
+  height: 300px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex !important; /* override .oculto solo cuando activo */
+  align-items: flex-end;    /* en móvil: sube desde abajo */
+  justify-content: center;
+  padding: 0;
+}
+
+/* Sobreescribir display cuando está oculto */
+.modal-overlay.oculto { display: none !important; }
+
+.modal-caja {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 24px 20px 32px;
+  width: 100%;
+  max-width: 480px;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.btn-cerrar-modal {
+  background: none;
+  border: none;
+  color: var(--c-text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+}
+
+.btn-cerrar-modal:hover {
+  color: var(--c-text);
+  background: var(--c-border);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-footer .btn-primario { flex: 2; width: auto; }
+.modal-footer .btn-secundario { flex: 1; }
+
+/* ============================================================
+   TABLET (≥600px)
+   ============================================================ */
+@media (min-width: 600px) {
+  .dashboard-contenido { padding: 28px 24px; }
+
+  #mapa { height: 380px; }
+
+  .lista-historial {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .seccion-acciones {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-overlay {
+    align-items: center; /* centrado vertical en tablet+ */
+    padding: 20px;
+  }
+
+  .modal-caja {
+    border-radius: var(--radius-lg);
+    width: auto;
+    min-width: 400px;
+  }
+}
+
+/* ============================================================
+   DESKTOP (≥960px)
+   ============================================================ */
+@media (min-width: 960px) {
+  .dashboard-contenido { padding: 36px 40px; }
+
+  #mapa { height: 440px; }
+
+  .lista-historial {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .auth-card { padding: 36px 32px; }
+}
+
+/* ---- Accesibilidad: foco visible ---- */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Reducir movimiento ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
